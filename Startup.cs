@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using webapi01.Services;
+using webapi01.Services.Implementations;
+
 namespace webapi01
 {
     public class Startup
@@ -26,6 +29,8 @@ namespace webapi01
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            //Injeção de dependência
+            services.AddScoped<IPersonService, PersonServiceImpl>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
