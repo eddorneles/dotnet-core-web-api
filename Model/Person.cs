@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace webapi01.Model
+namespace Model
 {
+    [Table("persons", Schema="rest_with_asp_net_udemy")]
     public class Person
     {
 
-        public long Id { get; set; }
+        public long? Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Address { get; set; }

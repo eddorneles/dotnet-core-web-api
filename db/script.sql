@@ -5,5 +5,6 @@ CREATE TABLE `persons` (
 	`Address` VARCHAR(50) NULL DEFAULT NULL,
 	`Gender` VARCHAR(50) NULL DEFAULT NULL
 )
-ENGINE=InnoDB
-;
+ENGINE=InnoDB;
+
+ALTER TABLE rest_with_asp_net_udemy.persons MODIFY COLUMN Id int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY;

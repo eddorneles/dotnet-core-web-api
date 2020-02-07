@@ -13,14 +13,15 @@ using Microsoft.Extensions.Options;
 
 using Microsoft.EntityFrameworkCore;
 
-using webapi01.Services;
-using webapi01.Services.Implementations;
-using webapi01.Model.Context;
+using Services;
+using Services.Implementations;
+using Model.Context;
 
 namespace webapi01
 {
     public class Startup
     {
+        //Construtor Startup
         public Startup(IConfiguration configuration){
             this.Configuration = configuration;
         }//END consructor
@@ -31,11 +32,12 @@ namespace webapi01
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration["MySqlConnection:MySqlConnectionString"];
-            services.AddDbContext<MySQLContext>( options => options.UseMySql( connection ) );
+            services.AddDbContext<MySqlContext>( options => options.UseMySql( connection ) );
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             //Injeção de dependência
             services.AddScoped<IPersonService, PersonServiceImpl>();
-        }
+            services.AddApiVersioning();
+        }//END ConfigureServices()
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using webapi01.Model;
-using webapi01.Services;
+using Model;
+using Services;
 
 namespace webapi01.Controllers
 {
@@ -49,7 +49,7 @@ namespace webapi01.Controllers
         public ActionResult Put( [FromBody] Person person )
         {
             if( person == null ) return BadRequest();
-            return new ObjectResult( this.personService.Create( person ) );
+            return new ObjectResult( this.personService.Update( person ) );
         }
 
         // DELETE api/values/5

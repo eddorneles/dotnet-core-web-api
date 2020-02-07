@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 
-using webapi01.Model;
+using Model;
 
 
-namespace webapi01.Services{
+namespace Services{
     public interface IPersonService{
         Person Create( Person person );
         Person FindById( long id );

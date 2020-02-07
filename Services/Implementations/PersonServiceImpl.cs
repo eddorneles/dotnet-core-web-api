@@ -1,14 +1,21 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 
-using webapi01.Model;
-using webapi01.Services;
+using Model;
+using Model.Context;
 
 
-namespace webapi01.Services.Implementations
+namespace Services.Implementations
 {
     public class PersonServiceImpl : IPersonService
     {
+        private MySqlContext context;
+
+        public PersonServiceImpl( MySqlContext context ){
+            this.context = context;
+        }//END constructor
 
         // Contador responsável por gerar um fake ID já que não estamos
         // acessando nenhum banco de dados
@@ -19,7 +26,13 @@ namespace webapi01.Services.Implementations
         // momento de persistir os dados
         public Person Create(Person person)
         {
+            try{
+                this.context.Add( person );
+                this.context.SaveChanges();
             return person;
+            }catch( Exception e ){
+                throw e;
+            }//END try
         }
 
         // Método responsável por retornar uma pessoa
@@ -27,57 +40,49 @@ namespace webapi01.Services.Implementations
         // estamos retornando um mock
         public Person FindById(long id)
         {
-            return new Person {
-                Id = IncrementAndGet(),
-                FirstName = "Leandro",
-                LastName = "Costa",
-                Address = "Uberlandia - Minas Gerais - Brasil",
-                Gender = "Male"
-            };
+            return this.context.Persons.SingleOrDefault( p => p.Id.Equals(id) );
         }
 
         // Método responsável por deletar
         // uma pessoa a partir de um ID
-        public void Delete(long id)
-        {
-            //A nossa lógica de exclusão viria aqui
-        }
+        public void Delete( long id ){
+            var result = this.context.Persons.SingleOrDefault( p => p.Id.Equals( id ) );
+            try{
+                if( result != null ){
+                    this.context.Persons.Remove( result );
+                }//END if
+            }catch( Exception e){
+                throw e;
+            }
+        }//END Delete
 
         // Método responsável por retornar todas as pessoas
         // mais uma vez essas informações são mocks
         public List<Person> FindAll()
         {
-            List<Person> persons = new List<Person>();
-            for (int i = 0; i < 8; i++)
-            {
-                Person person = MockPerson(i);
-                persons.Add(person);
-            }
-            return persons;
+            return this.context.Persons.ToList();
         }
 
         // Método responsável por atualizar uma pessoa
         // por ser mock retornamos a mesma informação passada
         public Person Update(Person person)
         {
+            if( !Exists( person ) ){
+                return new Person();
+            } 
+            var result = context.Persons.SingleOrDefault( p => p.Id.Equals( person.Id ) );
+            try{
+                this.context.Entry( result ).CurrentValues.SetValues( person );
+                this.context.SaveChanges();
+            }catch( Exception e ){
+                throw e;
+            }//END try
             return person;
+        }//END Update
+
+        private bool Exists( Person person ){
+            return this.context.Persons.Any( p => p.Id.Equals(person.Id) );
         }
 
-        private Person MockPerson(int i)
-        {
-            return new Person
-            {
-                Id = IncrementAndGet(),
-                FirstName = "Person Name " + i,
-                LastName = "Person Lastname " + i,
-                Address = "Some Address " + i,
-                Gender = "Male"
-            };
-        }
-
-        private long IncrementAndGet()
-        {
-            return Interlocked.Increment(ref count);
-        }
     }
 }
